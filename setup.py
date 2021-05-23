@@ -21,7 +21,7 @@ http://dx.doi.org/10.1007/978-3-642-19315-6_3.
 '''
 
 setuptools.setup(
-    name='elas',
+    name='pyelas',
     version='1.0',
     author='Pier Angelo Vendrame',
     author_email='vogliadifarniente@gmail.com',
