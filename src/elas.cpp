@@ -29,7 +29,7 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 using namespace std;
 
-void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims){
+void Elas::process (const uint8_t* I1_,const uint8_t* I2_,float* D1,float* D2,const int32_t* dims){
   
   // get width, height and bytes per line
   width  = dims[0];
@@ -244,9 +244,9 @@ void Elas::addCornerSupportPoints(vector<support_pt> &p_support) {
   p_border.push_back(support_pt(width-1,height-1,0));
   
   // find closest d
-  for (int32_t i=0; i<p_border.size(); i++) {
+  for (size_t i=0; i<p_border.size(); i++) {
     int32_t best_dist = 10000000;
-    for (int32_t j=0; j<p_support.size(); j++) {
+    for (size_t j=0; j<p_support.size(); j++) {
       int32_t du = p_border[i].u-p_support[j].u;
       int32_t dv = p_border[i].v-p_support[j].v;
       int32_t curr_dist = du*du+dv*dv;
@@ -262,7 +262,7 @@ void Elas::addCornerSupportPoints(vector<support_pt> &p_support) {
   p_border.push_back(support_pt(p_border[3].u+p_border[3].d,p_border[3].v,p_border[3].d));
   
   // add border points to support points
-  for (int32_t i=0; i<p_border.size(); i++)
+  for (size_t i=0; i<p_border.size(); i++)
     p_support.push_back(p_border[i]);
 }
 
@@ -453,12 +453,12 @@ vector<Elas::triangle> Elas::computeDelaunayTriangulation (vector<support_pt> p_
   in.pointlist = (float*)malloc(in.numberofpoints*2*sizeof(float));
   k=0;
   if (!right_image) {
-    for (int32_t i=0; i<p_support.size(); i++) {
+    for (size_t i=0; i<p_support.size(); i++) {
       in.pointlist[k++] = p_support[i].u;
       in.pointlist[k++] = p_support[i].v;
     }
   } else {
-    for (int32_t i=0; i<p_support.size(); i++) {
+    for (size_t i=0; i<p_support.size(); i++) {
       in.pointlist[k++] = p_support[i].u-p_support[i].d;
       in.pointlist[k++] = p_support[i].v;
     }
@@ -511,7 +511,7 @@ void Elas::computeDisparityPlanes (vector<support_pt> p_support,vector<triangle>
   Matrix b(3,1);
   
   // for all triangles do
-  for (int32_t i=0; i<tri.size(); i++) {
+  for (size_t i=0; i<tri.size(); i++) {
     
     // get triangle corner indices
     int32_t c1 = tri[i].c1;
@@ -587,7 +587,7 @@ void Elas::createGrid(vector<support_pt> p_support,int32_t* disparity_grid,int32
   int32_t* temp2 = (int32_t*)calloc((param.disp_max+1)*grid_height*grid_width,sizeof(int32_t));
   
   // for all support points do
-  for (int32_t i=0; i<p_support.size(); i++) {
+  for (size_t i=0; i<p_support.size(); i++) {
     
     // compute disparity range to fill for this support point
     int32_t x_curr = p_support[i].u;
@@ -786,9 +786,6 @@ void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,in
   // number of disparities
   const int32_t disp_num  = grid_dims[0]-1;
   
-  // descriptor window_size
-  int32_t window_size = 2;
-  
   // init disparity image to -10
   if (param.subsampling) {
     for (int32_t i=0; i<(width/2)*(height/2); i++)
@@ -813,7 +810,6 @@ void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,in
   for (uint32_t i=0; i<tri.size(); i++) {
     
     // get plane parameters
-    uint32_t p_i = i*3;
     if (!right_image) {
       plane_a = tri[i].t1a;
       plane_b = tri[i].t1b;
@@ -842,7 +838,7 @@ void Elas::computeDisparity(vector<support_pt> p_support,vector<triangle> tri,in
       tri_u[1] = p_support[c2].u-p_support[c2].d;
       tri_u[2] = p_support[c3].u-p_support[c3].d;
     }
-    float tri_v[3] = {p_support[c1].v,p_support[c2].v,p_support[c3].v};
+    float tri_v[3] = {static_cast<float>(p_support[c1].v),static_cast<float>(p_support[c2].v),static_cast<float>(p_support[c3].v)};
     
     for (uint32_t j=0; j<3; j++) {
       for (uint32_t k=0; k<j; k++) {

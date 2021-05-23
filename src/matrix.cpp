@@ -409,6 +409,7 @@ FLOAT Matrix::det () {
   for( int32_t i=0; i<m; i++)
     d *= A.val[i][i];
   free(idx);
+  return d;
 }
 
 bool Matrix::solve (const Matrix &M, FLOAT eps) {
@@ -429,8 +430,12 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
   int32_t* ipiv  = new int32_t[m];
   
   // loop variables
-  int32_t i, icol, irow, j, k, l, ll;
+  int32_t i, j, k, l, ll;
   FLOAT big, dum, pivinv, temp;
+  // PieroV: this silences the uninitialized warning, though I have not checked that
+  // these values are always updated when needed.
+  int32_t irow = 0;
+  int32_t icol = 0;
   
   // initialize pivots to zero
   for (j=0;j<m;j++) ipiv[j]=0;
@@ -439,17 +444,21 @@ bool Matrix::solve (const Matrix &M, FLOAT eps) {
   for (i=0;i<m;i++) {
     
     big=0.0;
-    
+
     // search for a pivot element
-    for (j=0;j<m;j++)
-      if (ipiv[j]!=1)
-        for (k=0;k<m;k++)
-          if (ipiv[k]==0)
+    for (j=0;j<m;j++) {
+      if (ipiv[j]!=1) {
+        for (k=0;k<m;k++) {
+          if (ipiv[k]==0) {
             if (fabs(A.val[j][k])>=big) {
       big=fabs(A.val[j][k]);
       irow=j;
       icol=k;
             }
+          }
+        }
+      }
+    }
     ++(ipiv[icol]);
     
     // We now have the pivot element, so we interchange rows, if needed, to put the pivot
@@ -512,7 +521,7 @@ bool Matrix::lu(int32_t *idx, FLOAT &d, FLOAT eps) {
   
   if (m != n) {
     cerr << "ERROR: Trying to LU decompose a matrix of size (" << m << "x" << n << ")" << endl;
-    exit(0);
+    return false;
   }
   
   int32_t i,imax,j,k;
@@ -530,6 +539,7 @@ bool Matrix::lu(int32_t *idx, FLOAT &d, FLOAT eps) {
     }
     vv[i] = 1.0/big; // Save the scaling.
   }
+  imax = 0;
   for (j=0; j<n; j++) { // This is the loop over columns of Crout’s method.
     for (i=0; i<j; i++) { // This is equation (2.3.12) except for i = j.
       sum = val[i][j];
