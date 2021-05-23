@@ -13,7 +13,7 @@ _long_descr = '''
 This package is the port to Python of libelas.
 
 It is a library for computing disparity maps of large images.
-It has been written by Andreas Geiger as a C++ library and MATLAB toolbox.
+It was written by Andreas Geiger as a C++ library and MATLAB toolbox.
 I wrote only the Python interface to use it in Python scripts.
 
 You can find the paper where the algorithm is described at
@@ -42,5 +42,7 @@ setuptools.setup(
         'Intended Audience :: Developers',
         'Topic :: Scientific/Engineering :: Image Recognition',
     ],
+    license='GPLv3',
+    platforms=['Linux', 'Windows', 'Unix', 'macOS'],
     ext_modules=[elas],
     python_requires=">=3.5")
