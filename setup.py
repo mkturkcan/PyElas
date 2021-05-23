@@ -1,12 +1,12 @@
 import setuptools
 
 elas = setuptools.Extension('elas', sources=[
-    'src/pyelas.cpp',
-    'src/elas.cpp',
-    'src/descriptor.cpp',
-    'src/filter.cpp',
-    'src/matrix.cpp',
-    'src/triangle.cpp',
+        'src/pyelas.cpp',
+        'src/elas.cpp',
+        'src/descriptor.cpp',
+        'src/filter.cpp',
+        'src/matrix.cpp',
+        'src/triangle.cpp',
     ], define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')])
 
 _long_descr = '''
@@ -22,12 +22,13 @@ http://dx.doi.org/10.1007/978-3-642-19315-6_3.
 
 setuptools.setup(
     name='pyelas',
-    version='1.0',
+    version='1.0.1',
     author='Pier Angelo Vendrame',
     author_email='vogliadifarniente@gmail.com',
     description='These are the Python bindings for libelas by '
                 'Andreas Geiger.',
     long_description=_long_descr,
+    long_description_content_type='text/plain',
     url='https://github.com/PieroV/PyElas',
     project_urls={
         'Original homepage': 'http://www.cvlibs.net/software/libelas/',
@@ -45,4 +46,7 @@ setuptools.setup(
     license='GPLv3',
     platforms=['Linux', 'Windows', 'Unix', 'macOS'],
     ext_modules=[elas],
+    install_requires=[
+        'numpy>=1.7',
+    ],
     python_requires=">=3.5")
