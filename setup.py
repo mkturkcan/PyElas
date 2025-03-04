@@ -1,4 +1,5 @@
 import setuptools
+import numpy as np  # Add this import
 
 elas = setuptools.Extension('elas', sources=[
         'src/pyelas.cpp',
@@ -7,15 +8,16 @@ elas = setuptools.Extension('elas', sources=[
         'src/filter.cpp',
         'src/matrix.cpp',
         'src/triangle.cpp',
-    ], define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')])
+    ], 
+    define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')],
+    include_dirs=[np.get_include()]  
+)
 
 _long_descr = '''
 This package is the port to Python of libelas.
-
 It is a library for computing disparity maps of large images.
 It was written by Andreas Geiger as a C++ library and MATLAB toolbox.
 I wrote only the Python interface to use it in Python scripts.
-
 You can find the paper where the algorithm is described at
 http://dx.doi.org/10.1007/978-3-642-19315-6_3.
 '''

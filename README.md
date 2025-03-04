@@ -1,5 +1,15 @@
 # PyElas
 
+This is a version of PyElas that compiles in 2025.
+
+## Setup
+
+```bash
+python setup.py install
+```
+
+## Introduction
+
 This is the Python version of libelas (LIBrary for Efficient LArge-scale Stereo matching) by Andreas Geiger.
 
 Apart from fixing warnings reported by GCC on Linux, almost nothing has been changed on the original code.
